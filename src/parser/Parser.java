@@ -17,6 +17,8 @@ public class Parser {
     private Token curToken;
     private Token peekToken;
     
+    private int curIndents;
+    
     public Parser(Lexer lexer, Emitter emitter) {
         this.lexer = lexer;
         this.emitter = emitter;
@@ -27,6 +29,8 @@ public class Parser {
         
         this.curToken = null; // may set to empty Token()
         this.peekToken = null;
+        
+        this.curIndents = 1;
         
         this.nextToken();
         this.nextToken();
@@ -160,7 +164,8 @@ public class Parser {
 
             // Zero or more statements in the body
             while (!this.checkToken(TokenType.ENDIF)) {
-//                this.emitter.emitIndent();
+                this.emitter.emitIndent(this.curIndents);
+                this.curIndents++;
                 this.statement();
             }
             this.match(TokenType.ENDIF);
@@ -177,9 +182,13 @@ public class Parser {
             this.emitter.emitLine(") {");
 
             while (!this.checkToken(TokenType.ENDWHILE)) {
+                this.curIndents++;
+                this.emitter.emitIndent(this.curIndents);
                 this.statement();
             }
             this.match(TokenType.ENDWHILE);
+            this.curIndents = 1;
+            this.emitter.emitIndent(this.curIndents);
             this.emitter.emitLine("}");
         }
         // | "LABEL" ident
@@ -204,9 +213,11 @@ public class Parser {
         // | "LET" ident "=" expression
         else if (this.checkToken(TokenType.LET)) {
             this.nextToken();
+            
             // Check if ident exists in symbol table. If not, declare it.
             if (!this.symbols.contains(this.curToken.getTokenText())) {
                 this.symbols.add(this.curToken.getTokenText());
+                this.emitter.headerIndent(1);
                 this.emitter.headerLine("float " + this.curToken.getTokenText() + ";");
             }
             this.emitter.emit(this.curToken.getTokenText() + " = ");
@@ -223,14 +234,23 @@ public class Parser {
             // If variable doesn't already exist, declare it.
             if (!this.symbols.contains(this.curToken.getTokenText())) {
                 this.symbols.add(this.curToken.getTokenText());
+                this.emitter.headerIndent(1);
                 this.emitter.headerLine("float " + this.curToken.getTokenText() + ";");
             }
             // Emit scanf but also validate the input.
             // If invalid, set the variable to 0 and clear the input.
-            this.emitter.emitLine("if(0 == scanf(\"%" + "f\", &" + this.curToken.getTokenText() + ")) {");
+            this.curIndents++;
+            this.emitter.emitLine("if (0 == scanf(\"%" + "f\", &" + this.curToken.getTokenText() + ")) {");
+            
+            this.emitter.emitIndent(this.curIndents);
             this.emitter.emitLine(this.curToken.getTokenText() + " = 0;");
+            
+            this.emitter.emitIndent(this.curIndents);
             this.emitter.emit("scanf(\"%");
             this.emitter.emitLine("*s\");");
+            
+            this.curIndents--;
+            this.emitter.emitIndent(this.curIndents);
             this.emitter.emitLine("}");
             
             this.match(TokenType.IDENTIFIER);
@@ -238,6 +258,8 @@ public class Parser {
         else {
             this.abort("Invalid statement at " + this.curToken.getTokenText() + " (" + this.curToken.getTokenKind() + ")");
         }
+        
+        this.curIndents = 1;
         
         // All statements end in newline
         this.newline();
@@ -252,6 +274,7 @@ public class Parser {
         System.out.println("PROGRAM");
         
         this.emitter.headerLine("#include <stdio.h>");
+        this.emitter.headerLine("");
         this.emitter.headerLine("int main(void) {");
 
         // Since some newlines are required in our grammar, need to skip the excess.
@@ -261,9 +284,12 @@ public class Parser {
         
         // Parse all the statements in the program.
         while (!this.checkToken(TokenType.EOF)) {
+//            this.curIndents = 1;
+            this.emitter.emitIndent(this.curIndents);
             this.statement();
         }
         
+        this.emitter.emitIndent(this.curIndents);
         this.emitter.emitLine("return 0;");
         this.emitter.emitLine("}");
         

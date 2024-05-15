@@ -25,8 +25,16 @@ public class Emitter {
         this.code += code + "\n";
     }
     
+    public void emitIndent(int indents) {
+        this.code += "    ".repeat(indents);
+    }
+    
     public void headerLine(String code) {
         this.header += code + "\n";
+    }
+    
+    public void headerIndent(int indents) {
+        this.header += "    ".repeat(indents);
     }
     
     public void writeFile() throws IOException {
