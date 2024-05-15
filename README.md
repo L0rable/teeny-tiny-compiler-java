@@ -4,7 +4,8 @@ Instead of using Python, I decided to do it Java because why not.
 
 ## General Overview
 To start off the compiler is built from 3 stages of processing:
-![5fb7fa0b38c593a0ed16dc9304e3400b.png](:/e78c7348c0de47d9a15041e845310109)
+
+![alt text](https://austinhenley.com/blog/images/compilersteps.png)
 
 1. [Lexer](https://austinhenley.com/blog/teenytinycompiler1.html): Takes in the input code and identifies the keywords called "Tokens"
 2. [Parser](https://austinhenley.com/blog/teenytinycompiler2.html): Verifies the grammar, which is the order of the Tokens. This can be expressed through [Backus–Naur form](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form) and [Extended](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form)  Standard Notation.
@@ -24,8 +25,7 @@ unary ::= ["+" | "-"] primary
 primary ::= number | ident
 newline ::= '\n'+
 ```
-3. [Emitter](https://austinhenley.com/blog/teenytinycompiler3.html): Produces the output code and then writes it to a file.  
-<br>
+3. [Emitter](https://austinhenley.com/blog/teenytinycompiler3.html): Produces the output code and then writes it to a file.
 
 ## Current features
 This includes the features from the tutorial and some:
@@ -37,12 +37,9 @@ This includes the features from the tutorial and some:
 - Input numbers
 - Labels and goto
 - Comments
-<br>
 
 Here are the features I have implemented:
 - Indentation
-
-<br>
 
 ## Future features
 There are a bunch that are list on [last part](https://austinhenley.com/blog/teenytinycompiler3.html) of the tutorial article. I would like to focus on Testing through Unit Tests, Integration and End-to-End Tests.
