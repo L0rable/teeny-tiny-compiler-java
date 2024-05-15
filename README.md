@@ -3,7 +3,6 @@ First off thanks to [Austin](https://austinhenley.com/index.html) for writing up
 Instead of using Python, I decided to do it Java because why not.
 
 ## General Overview
-* * *
 To start off the compiler is built from 3 stages of processing:
 ![5fb7fa0b38c593a0ed16dc9304e3400b.png](:/e78c7348c0de47d9a15041e845310109)
 
@@ -29,7 +28,6 @@ newline ::= '\n'+
 <br>
 
 ## Current features
-* * *
 This includes the features from the tutorial and some:
 - Numerical variables
 - Basic arithmetic
@@ -47,7 +45,6 @@ Here are the features I have implemented:
 <br>
 
 ## Future features
-* * *
 There are a bunch that are list on [last part](https://austinhenley.com/blog/teenytinycompiler3.html) of the tutorial article. I would like to focus on Testing through Unit Tests, Integration and End-to-End Tests.
 <br>
 
