@@ -27,7 +27,7 @@ public class Parser {
         this.labelsDeclared = new ArrayList<String>();
         this.labelsGotoed = new ArrayList<String>();
         
-        this.curToken = null; // may set to empty Token()
+        this.curToken = null;
         this.peekToken = null;
         
         this.curIndents = 1;

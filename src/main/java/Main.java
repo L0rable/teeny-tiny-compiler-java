@@ -20,22 +20,22 @@ public class Main {
         }
         return resultStringBuilder.toString();
     }
-    
+
     public static void main(String[] args) {
         try {
             System.out.println("Teeny Tiny Compiler");
-            
-            InputStream sourceFile = new FileInputStream("../programs/sourceCode.teenytiny");
+
+            InputStream sourceFile = new FileInputStream("../programs/average.teenytiny");
             String source = readFromFile(sourceFile);
-            
+
             Lexer lexer = new Lexer(source);
             Emitter emitter = new Emitter("output.c");
             Parser parser = new Parser(lexer, emitter);
-            
+
             parser.program();
             emitter.writeFile();
             System.out.println("Compiling completed.");
-        } 
+        }
         catch (IOException e) { System.err.println(e); }
     }
 }
