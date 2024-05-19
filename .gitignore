@@ -26,7 +26,8 @@ replay_pid*
 # C output file
 *.c
 
-# Netbeans files
-nbproject/
-build.xml
-manifest.mf
+# Maven
+target/
+
+# IntelliJ Files
+.idea/
