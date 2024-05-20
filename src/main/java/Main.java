@@ -2,7 +2,6 @@ import lexer.Lexer;
 import parser.Parser;
 import emitter.Emitter;
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -25,7 +24,8 @@ public class Main {
         try {
             System.out.println("Teeny Tiny Compiler");
 
-            InputStream sourceFile = new FileInputStream("../programs/average.teenytiny");
+            ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+            InputStream sourceFile = classloader.getResourceAsStream("programs/helloWorld.teenytiny");
             String source = readFromFile(sourceFile);
 
             Lexer lexer = new Lexer(source);
