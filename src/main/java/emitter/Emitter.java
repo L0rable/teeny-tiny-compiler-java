@@ -39,6 +39,9 @@ public class Emitter {
     
     public void writeFile() throws IOException {
         Path outputFile = Paths.get(fullPath);
+        if (this.header.trim().length() == 0) {
+            this.header = this.header.trim();
+        }
         String outputContents = this.header + this.code;
         Files.writeString(outputFile, outputContents, StandardCharsets.UTF_8);
     }
