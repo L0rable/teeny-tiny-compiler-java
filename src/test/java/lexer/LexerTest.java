@@ -10,57 +10,40 @@ class LexerTest {
     Lexer lexer;
     String sourceCode;
 
-    @BeforeEach
-    void init() {
-        this.sourceCode = "PRINT \"Hello World!\"";
-        this.lexer = new Lexer(this.sourceCode);
-    }
-
-    @Test
-    void peekTest() {
-        char expectedCurChar = 'P';
-        char actualCurChar = this.lexer.getCurrentChar();
-        assertEquals(expectedCurChar, actualCurChar);
-
-        expectedCurChar = 'R';
-        actualCurChar = this.lexer.peek();
-        assertEquals(expectedCurChar, actualCurChar);
-    }
-
-    @Test
-    void nextCharTest() {
-        char expectedCurChar = 'P';
-        char actualCurChar = this.lexer.getCurrentChar();
-        assertEquals(expectedCurChar, actualCurChar);
-
-        this.lexer.nextChar();
-        expectedCurChar = 'R';
-        actualCurChar = this.lexer.getCurrentChar();
-        assertEquals(expectedCurChar, actualCurChar);
-    }
-
     @Test
     void skipWhiteSpaceTest() {
-        for (int i = 0; i < 5; i++) {
-            this.lexer.nextChar();
-        }
-        char expectedCurChar = ' ';
-        char actualCurChar = this.lexer.getCurrentChar();
-        assertEquals(expectedCurChar, actualCurChar);
+        this.sourceCode = "      \"Hello\" \"World\"    \"!\"";
+        lexer = new Lexer(sourceCode);
+        Token expectedToken = new Token("Hello", TokenType.STRING);
+        Token actualToken = lexer.getToken();
+        Assertions.assertEquals(expectedToken.getTokenText(), actualToken.getTokenText());
+        Assertions.assertEquals(expectedToken.getTokenKind(), actualToken.getTokenKind());
 
-        this.lexer.skipWhiteSpace();
-        expectedCurChar = '\"';
-        actualCurChar = this.lexer.getCurrentChar();
-        assertEquals(expectedCurChar, actualCurChar);
+        expectedToken = new Token("World", TokenType.STRING);
+        actualToken = lexer.getToken();
+        Assertions.assertEquals(expectedToken.getTokenText(), actualToken.getTokenText());
+        Assertions.assertEquals(expectedToken.getTokenKind(), actualToken.getTokenKind());
+
+        expectedToken = new Token("!", TokenType.STRING);
+        actualToken = lexer.getToken();
+        Assertions.assertEquals(expectedToken.getTokenText(), actualToken.getTokenText());
+        Assertions.assertEquals(expectedToken.getTokenKind(), actualToken.getTokenKind());
     }
 
     @Test
     void skipCommentTest() {
-        this.sourceCode = "# Hello World\n" + "PRINT \"Hello World!\"";
-        this.lexer.skipComment();
-        char expectedCurChar = 'P';
-        char actualCurChar = this.lexer.getCurrentChar();
-        assertEquals(expectedCurChar, actualCurChar);
+        this.sourceCode = "# Hello World" + ", still a comment\n" +
+                "\"Hello World!\"" + "# Comment";
+        lexer = new Lexer(sourceCode);
+        Token expectedToken = new Token("\\n", TokenType.NEWLINE);
+        Token actualToken = lexer.getToken();
+        Assertions.assertEquals(expectedToken.getTokenText(), actualToken.getTokenText());
+        Assertions.assertEquals(expectedToken.getTokenKind(), actualToken.getTokenKind());
+
+        expectedToken = new Token("Hello World!", TokenType.STRING);
+        actualToken = lexer.getToken();
+        Assertions.assertEquals(expectedToken.getTokenText(), actualToken.getTokenText());
+        Assertions.assertEquals(expectedToken.getTokenKind(), actualToken.getTokenKind());
     }
 
     @Nested

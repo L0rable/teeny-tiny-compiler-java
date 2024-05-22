@@ -16,18 +16,14 @@ public class Lexer {
         this.nextChar();
     }
     
-    public char getCurrentChar() {
-        return this.curChar;
-    }
-    
-    public char peek() {
+    private char peek() {
         if (this.curPos + 1 >= this.source.length()) {
             return '\0';
         }
         return this.source.charAt(curPos+1);
     }
     
-    public void nextChar() {
+    private void nextChar() {
         this.curPos += 1;
         if (this.curPos >= this.source.length()) {
             this.curChar = '\0';
@@ -37,13 +33,13 @@ public class Lexer {
         }
     }
     
-    public void skipWhiteSpace() {
+    private void skipWhiteSpace() {
         while (this.curChar == ' ' || this.curChar == '\t' || this.curChar == '\r') {
             this.nextChar();
         }
     }
     
-    public void skipComment() {
+    private void skipComment() {
         if (this.curChar == '#') {
             while (this.curChar != '\n') {
                 this.nextChar();
@@ -51,7 +47,7 @@ public class Lexer {
         }
     }
     
-    public void abort(String message) {
+    private void abort(String message) {
         System.err.println("Lexer error. " + message);
         System.exit(0);
     }
@@ -133,10 +129,12 @@ public class Lexer {
             
             if (this.peek() == '.') {
                 this.nextChar();
-                if (!Character.isDigit(this.peek()))
+                if (!Character.isDigit(this.peek())) {
                     this.abort("Illegal character in number.");
-                while (Character.isDigit(this.peek()))
+                }
+                while (Character.isDigit(this.peek())) {
                     this.nextChar();
+                }
             }
 
             String tokenText = this.source.substring(startPos, this.curPos + 1);
@@ -147,17 +145,19 @@ public class Lexer {
             int startPos = this.curPos;
             
             // This might not check whether "alpha numeric" characters (A–Z, a–z and 0–9)
-            while (Character.isAlphabetic(this.peek()) || Character.isDigit(this.peek()))
+            while (Character.isAlphabetic(this.peek()) || Character.isDigit(this.peek())) {
                 this.nextChar();
+            }
             
             String tokenText = this.source.substring(startPos, this.curPos + 1);
             TokenType keyword = Token.checkIfKeyword(tokenText);
             
-            if (keyword == null)
+            if (keyword == null) {
                 token = new Token(tokenText, TokenType.IDENTIFIER);
-            else
+            }
+            else {
                 token = new Token(tokenText, keyword);
-            
+            }
         }
         else if (this.curChar == '\n') {
             token = new Token("\\n", TokenType.NEWLINE);
