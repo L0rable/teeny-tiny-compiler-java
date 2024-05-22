@@ -24,8 +24,8 @@ public class Token {
     
     public static TokenType checkIfKeyword(String tokenString) {
         for (TokenType kind : TokenType.values()) {
-            boolean cond = kind.value >= 100 && kind.value < 200 && kind.toString().equals(tokenString);
-            if (cond)
+            boolean checkIfKeyword = kind.value >= 100 && kind.value < 200 && kind.toString().equals(tokenString);
+            if (checkIfKeyword)
                 return kind;
         }
         return null;
