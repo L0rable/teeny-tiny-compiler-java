@@ -134,7 +134,7 @@ class EmitterTest {
     }
 
     @Nested
-    class EmitterEdgeCaseTests {
+    class edgeCaseTests {
         @Test
         void noOverwritingTest() throws IOException {
             emitter.emitLine("// Hello World");

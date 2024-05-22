@@ -1,10 +1,7 @@
-package lexer;
-
+import lexer.Lexer;
 import org.junit.jupiter.api.*;
 import token.Token;
 import token.TokenType;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class LexerTest {
     Lexer lexer;
@@ -51,8 +48,8 @@ class LexerTest {
         void checkTokensEqual(String actualSourceCode, Token expectedToken) {
             lexer = new Lexer(actualSourceCode);
             Token actualToken = lexer.getToken();
-            assertEquals(expectedToken.getTokenText(), actualToken.getTokenText());
-            assertEquals(expectedToken.getTokenKind(), actualToken.getTokenKind());
+            Assertions.assertEquals(expectedToken.getTokenText(), actualToken.getTokenText());
+            Assertions.assertEquals(expectedToken.getTokenKind(), actualToken.getTokenKind());
         }
 
         @Test
