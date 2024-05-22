@@ -36,33 +36,29 @@ public class Parser {
         this.nextToken();
     }
     
-    public boolean checkToken(TokenType kind) {
+    private boolean checkToken(TokenType kind) {
         return kind == this.curToken.getTokenKind();
     }
 
-    public boolean checkPeek(TokenType kind) {
-        return kind == this.peekToken.getTokenKind();
-    }
-
-    public void match(TokenType kind) {
+    private void match(TokenType kind) {
         if (!this.checkToken(kind))
             this.abort("Expected " + kind.toString() + ", got " + this.curToken.getTokenText());
         this.nextToken();
     }
 
-    public void nextToken() {
+    private void nextToken() {
         this.curToken = this.peekToken;
         this.peekToken = this.lexer.getToken();
     }
     
-    public boolean isComparisonOperator() {
+    private boolean isComparisonOperator() {
         return this.checkToken(TokenType.EQEQ) || this.checkToken(TokenType.NOTEQ)
                 || this.checkToken(TokenType.LT) || this.checkToken(TokenType.LTEQ)
                 || this.checkToken(TokenType.GT) || this.checkToken(TokenType.GTEQ);
     }
     
     // newline ::= '\n'+
-    public void newline() {
+    private void newline() {
         this.match(TokenType.NEWLINE);
         while (this.checkToken(TokenType.NEWLINE)) {
             this.nextToken();
@@ -70,7 +66,7 @@ public class Parser {
     }
     
     // primary ::= number | ident
-    public void primary() {
+    private void primary() {
         if (this.checkToken(TokenType.NUMBER)) {
             this.emitter.emit(this.curToken.getTokenText());
             this.nextToken();
@@ -89,7 +85,7 @@ public class Parser {
     }
     
     // unary ::= ["+" | "-"] primary
-    public void unary() {
+    private void unary() {
         if (this.checkToken(TokenType.PLUS) || this.checkToken(TokenType.MINUS)) {
             this.emitter.emit(this.curToken.getTokenText());
             this.nextToken();
@@ -98,7 +94,7 @@ public class Parser {
     }
     
     // term ::= unary {( "/" | "*" ) unary
-    public void term() {
+    private void term() {
         this.unary();
         while (this.checkToken(TokenType.SLASH) || this.checkToken(TokenType.ASTERISK)) {
             this.emitter.emit(this.curToken.getTokenText());
@@ -108,7 +104,7 @@ public class Parser {
     }
     
     // expression ::= term {( "-" | "+" ) term}
-    public void expression() {
+    private void expression() {
         this.term();
         while (this.checkToken(TokenType.MINUS) || this.checkToken(TokenType.PLUS)) {
             this.emitter.emit(this.curToken.getTokenText());
@@ -118,7 +114,7 @@ public class Parser {
     }
 
     // comparison ::= expression (("==" | "!=" | ">" | ">=" | "<" | "<=") expression)+
-    public void comparison() {
+    private void comparison() {
         this.expression();
         // Must be at least 1 (comparison operator -> expression)
         if (this.isComparisonOperator()) {
@@ -138,7 +134,7 @@ public class Parser {
     }
     
     // statement ::=
-    public void statement() {
+    private void statement() {
         // "PRINT" (expression | string)
         if (this.checkToken(TokenType.PRINT)) {
             this.nextToken();
@@ -160,15 +156,23 @@ public class Parser {
 
             this.match(TokenType.THEN);
             this.newline();
-            this.emitter.emit(") {");
+            boolean zeroStatements = this.checkToken(TokenType.ENDIF);
+            if (zeroStatements) {
+                this.emitter.emit(") {");
+            } else {
+                this.emitter.emitLine(") {");
+            }
 
-            // Zero or more statements in the body
             while (!this.checkToken(TokenType.ENDIF)) {
-                this.emitter.emitIndent(this.curIndents);
                 this.curIndents++;
+                this.emitter.emitIndent(this.curIndents);
                 this.statement();
             }
             this.match(TokenType.ENDIF);
+            this.curIndents = 1;
+            if (!zeroStatements) {
+                this.emitter.emitIndent(this.curIndents);
+            }
             this.emitter.emitLine("}");
         }
         // | "WHILE" comparison "REPEAT" newline {statement newline} "ENDWHILE"
@@ -179,16 +183,24 @@ public class Parser {
 
             this.match(TokenType.REPEAT);
             this.newline();
-            this.emitter.emitLine(") {");
+            boolean zeroStatements = this.checkToken(TokenType.ENDWHILE);
+            if (zeroStatements) {
+                this.emitter.emit(") {");
+            } else {
+                this.emitter.emitLine(") {");
+            }
 
             while (!this.checkToken(TokenType.ENDWHILE)) {
                 this.curIndents++;
                 this.emitter.emitIndent(this.curIndents);
                 this.statement();
             }
+
             this.match(TokenType.ENDWHILE);
             this.curIndents = 1;
-            this.emitter.emitIndent(this.curIndents);
+            if (!zeroStatements) {
+                this.emitter.emitIndent(this.curIndents);
+            }
             this.emitter.emitLine("}");
         }
         // | "LABEL" ident
@@ -200,15 +212,15 @@ public class Parser {
             }
             this.labelsDeclared.add(this.curToken.getTokenText());
             
-            this.match(TokenType.IDENTIFIER);
             this.emitter.emitLine(this.curToken.getTokenText() + ":");
+            this.match(TokenType.IDENTIFIER);
         }
         // | "GOTO" ident
         else if (this.checkToken(TokenType.GOTO)) {
             this.nextToken();
             this.labelsGotoed.add(this.curToken.getTokenText());
-            this.match(TokenType.IDENTIFIER);
             this.emitter.emitLine("goto " + this.curToken.getTokenText() + ";");
+            this.match(TokenType.IDENTIFIER);
         }
         // | "LET" ident "=" expression
         else if (this.checkToken(TokenType.LET)) {
@@ -265,7 +277,7 @@ public class Parser {
         this.newline();
     }
     
-    public void abort(String message) {
+    private void abort(String message) {
         System.err.println("Parser error. " + message);
         System.exit(0); 
     }
@@ -275,7 +287,7 @@ public class Parser {
         
         this.emitter.headerLine("#include <stdio.h>");
         this.emitter.headerLine("");
-        this.emitter.headerLine("int main(void) {");
+        this.emitter.headerLine("int main() {");
 
         // Since some newlines are required in our grammar, need to skip the excess.
         while (this.checkToken(TokenType.NEWLINE)) {
