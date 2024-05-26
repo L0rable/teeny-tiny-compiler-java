@@ -59,8 +59,70 @@ public class Lexer {
         
         this.skipWhiteSpace();
         this.skipComment();
-        
-        if (this.curChar == '=') {
+
+        // Types
+        if (this.curChar == '\0') {
+            token = new Token("", TokenType.EOF);
+        }
+        else if (this.curChar == '\n') {
+            token = new Token("\\n", TokenType.NEWLINE);
+        }
+        else if (Character.isDigit(this.curChar)) {
+            int startPos = this.curPos;
+
+            while (Character.isDigit(this.peek()))
+                this.nextChar();
+
+            if (this.peek() == '.') {
+                this.nextChar();
+                if (!Character.isDigit(this.peek())) {
+                    this.abort("Illegal character in number.");
+                }
+                while (Character.isDigit(this.peek())) {
+                    this.nextChar();
+                }
+            }
+
+            String tokenText = this.source.substring(startPos, this.curPos + 1);
+            token = new Token(tokenText, TokenType.NUMBER);
+        }
+        else if (Character.isAlphabetic(this.curChar)) {
+            // Handle Identifiers and Keywords
+            int startPos = this.curPos;
+
+            // This might not check whether "alpha numeric" characters (A–Z, a–z and 0–9)
+            while (Character.isAlphabetic(this.peek()) || Character.isDigit(this.peek())) {
+                this.nextChar();
+            }
+
+            String tokenText = this.source.substring(startPos, this.curPos + 1);
+            TokenType keyword = Token.checkIfKeyword(tokenText);
+
+            if (keyword == null) {
+                token = new Token(tokenText, TokenType.IDENTIFIER);
+            }
+            else {
+                token = new Token(tokenText, keyword);
+            }
+        }
+        else if (this.curChar == '\"') {
+            this.nextChar();
+            int startPos = this.curPos;
+
+            while (this.curChar != '\"') {
+                if (this.curChar == '\r' || this.curChar == '\n' ||
+                        this.curChar == '\t' || this.curChar == '\\' || this.curChar == '%') {
+                    this.abort("Illegal character in string");
+                }
+                this.nextChar();
+            }
+
+            String tokenText = this.source.substring(startPos, this.curPos);
+            token = new Token(tokenText, TokenType.STRING);
+        }
+
+        // Operators
+        else if (this.curChar == '=') {
             if (this.peek() == '=') {
                 this.nextChar();
                 token = new Token("==", TokenType.EQEQ);
@@ -104,66 +166,6 @@ public class Lexer {
             }
             else
                 token = new Token(">", TokenType.GT);
-        }
-        else if (this.curChar == '\"') {
-            this.nextChar();
-            int startPos = this.curPos;
-            
-            while (this.curChar != '\"') {
-                if (this.curChar == '\r' || this.curChar == '\n' || 
-                    this.curChar == '\t' || this.curChar == '\\' || this.curChar == '%') {
-                    this.abort("Illegal character in string");
-                }
-                this.nextChar();
-            }
-            
-            String tokenText = this.source.substring(startPos, this.curPos);
-            token = new Token(tokenText, TokenType.STRING);
-            
-        }
-        else if (Character.isDigit(this.curChar)) {
-            int startPos = this.curPos;
-            
-            while (Character.isDigit(this.peek()))
-                this.nextChar();
-            
-            if (this.peek() == '.') {
-                this.nextChar();
-                if (!Character.isDigit(this.peek())) {
-                    this.abort("Illegal character in number.");
-                }
-                while (Character.isDigit(this.peek())) {
-                    this.nextChar();
-                }
-            }
-
-            String tokenText = this.source.substring(startPos, this.curPos + 1);
-            token = new Token(tokenText, TokenType.NUMBER);
-        }
-        else if (Character.isAlphabetic(this.curChar)) {
-            // Handle Identifiers and Keywords      
-            int startPos = this.curPos;
-            
-            // This might not check whether "alpha numeric" characters (A–Z, a–z and 0–9)
-            while (Character.isAlphabetic(this.peek()) || Character.isDigit(this.peek())) {
-                this.nextChar();
-            }
-            
-            String tokenText = this.source.substring(startPos, this.curPos + 1);
-            TokenType keyword = Token.checkIfKeyword(tokenText);
-            
-            if (keyword == null) {
-                token = new Token(tokenText, TokenType.IDENTIFIER);
-            }
-            else {
-                token = new Token(tokenText, keyword);
-            }
-        }
-        else if (this.curChar == '\n') {
-            token = new Token("\\n", TokenType.NEWLINE);
-        }
-        else if (this.curChar == '\0') {
-            token = new Token("", TokenType.EOF);
         }
         else {
             token = new Token();

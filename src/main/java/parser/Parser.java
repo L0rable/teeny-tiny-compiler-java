@@ -135,8 +135,27 @@ public class Parser {
     
     // statement ::=
     private void statement() {
+        // | "LABEL" ident
+        if (this.checkToken(TokenType.LABEL)) {
+            this.nextToken();
+            // Make sure this label doesn't already exist.
+            if (this.labelsDeclared.contains(this.curToken.getTokenText())) {
+                this.abort("Label already exists: " + this.curToken.getTokenText());
+            }
+            this.labelsDeclared.add(this.curToken.getTokenText());
+
+            this.emitter.emitLine(this.curToken.getTokenText() + ":");
+            this.match(TokenType.IDENTIFIER);
+        }
+        // | "GOTO" ident
+        else if (this.checkToken(TokenType.GOTO)) {
+            this.nextToken();
+            this.labelsGotoed.add(this.curToken.getTokenText());
+            this.emitter.emitLine("goto " + this.curToken.getTokenText() + ";");
+            this.match(TokenType.IDENTIFIER);
+        }
         // "PRINT" (expression | string)
-        if (this.checkToken(TokenType.PRINT)) {
+        else if (this.checkToken(TokenType.PRINT)) {
             this.nextToken();
             if (this.checkToken(TokenType.STRING)) {
                 this.emitter.emitLine("printf(\"" + this.curToken.getTokenText() + "\\n\");");
@@ -147,6 +166,51 @@ public class Parser {
                 this.expression();
                 this.emitter.emitLine("));");
             }
+        }
+        // | "INPUT" ident
+        else if (this.checkToken(TokenType.INPUT)) {
+            this.nextToken();
+
+            // If variable doesn't already exist, declare it.
+            if (!this.symbols.contains(this.curToken.getTokenText())) {
+                this.symbols.add(this.curToken.getTokenText());
+                this.emitter.headerIndent(1);
+                this.emitter.headerLine("float " + this.curToken.getTokenText() + ";");
+            }
+            // Emit scanf but also validate the input.
+            // If invalid, set the variable to 0 and clear the input.
+            this.curIndents++;
+            this.emitter.emitLine("if (0 == scanf(\"%" + "f\", &" + this.curToken.getTokenText() + ")) {");
+
+            this.emitter.emitIndent(this.curIndents);
+            this.emitter.emitLine(this.curToken.getTokenText() + " = 0;");
+
+            this.emitter.emitIndent(this.curIndents);
+            this.emitter.emit("scanf(\"%");
+            this.emitter.emitLine("*s\");");
+
+            this.curIndents--;
+            this.emitter.emitIndent(this.curIndents);
+            this.emitter.emitLine("}");
+
+            this.match(TokenType.IDENTIFIER);
+        }
+        // | "LET" ident "=" expression
+        else if (this.checkToken(TokenType.LET)) {
+            this.nextToken();
+
+            // Check if ident exists in symbol table. If not, declare it.
+            if (!this.symbols.contains(this.curToken.getTokenText())) {
+                this.symbols.add(this.curToken.getTokenText());
+                this.emitter.headerIndent(1);
+                this.emitter.headerLine("float " + this.curToken.getTokenText() + ";");
+            }
+            this.emitter.emit(this.curToken.getTokenText() + " = ");
+            this.match(TokenType.IDENTIFIER);
+            this.match(TokenType.EQ);
+
+            this.expression();
+            this.emitter.emitLine(";");
         }
         // | "IF" comparison "THEN" newline {statement} "ENDIF"
         else if (this.checkToken(TokenType.IF)) {
@@ -203,76 +267,12 @@ public class Parser {
             }
             this.emitter.emitLine("}");
         }
-        // | "LABEL" ident
-        else if (this.checkToken(TokenType.LABEL)) {
-            this.nextToken();
-            // Make sure this label doesn't already exist.
-            if (this.labelsDeclared.contains(this.curToken.getTokenText())) {
-                this.abort("Label already exists: " + this.curToken.getTokenText());
-            }
-            this.labelsDeclared.add(this.curToken.getTokenText());
-            
-            this.emitter.emitLine(this.curToken.getTokenText() + ":");
-            this.match(TokenType.IDENTIFIER);
-        }
-        // | "GOTO" ident
-        else if (this.checkToken(TokenType.GOTO)) {
-            this.nextToken();
-            this.labelsGotoed.add(this.curToken.getTokenText());
-            this.emitter.emitLine("goto " + this.curToken.getTokenText() + ";");
-            this.match(TokenType.IDENTIFIER);
-        }
-        // | "LET" ident "=" expression
-        else if (this.checkToken(TokenType.LET)) {
-            this.nextToken();
-            
-            // Check if ident exists in symbol table. If not, declare it.
-            if (!this.symbols.contains(this.curToken.getTokenText())) {
-                this.symbols.add(this.curToken.getTokenText());
-                this.emitter.headerIndent(1);
-                this.emitter.headerLine("float " + this.curToken.getTokenText() + ";");
-            }
-            this.emitter.emit(this.curToken.getTokenText() + " = ");
-            this.match(TokenType.IDENTIFIER);
-            this.match(TokenType.EQ);
-            
-            this.expression();
-            this.emitter.emitLine(";");
-        }
-        // | "INPUT" ident
-        else if (this.checkToken(TokenType.INPUT)) {
-            this.nextToken();
-            
-            // If variable doesn't already exist, declare it.
-            if (!this.symbols.contains(this.curToken.getTokenText())) {
-                this.symbols.add(this.curToken.getTokenText());
-                this.emitter.headerIndent(1);
-                this.emitter.headerLine("float " + this.curToken.getTokenText() + ";");
-            }
-            // Emit scanf but also validate the input.
-            // If invalid, set the variable to 0 and clear the input.
-            this.curIndents++;
-            this.emitter.emitLine("if (0 == scanf(\"%" + "f\", &" + this.curToken.getTokenText() + ")) {");
-            
-            this.emitter.emitIndent(this.curIndents);
-            this.emitter.emitLine(this.curToken.getTokenText() + " = 0;");
-            
-            this.emitter.emitIndent(this.curIndents);
-            this.emitter.emit("scanf(\"%");
-            this.emitter.emitLine("*s\");");
-            
-            this.curIndents--;
-            this.emitter.emitIndent(this.curIndents);
-            this.emitter.emitLine("}");
-            
-            this.match(TokenType.IDENTIFIER);
-        }
         else {
             this.abort("Invalid statement at " + this.curToken.getTokenText() + " (" + this.curToken.getTokenKind() + ")");
         }
-        
+
         this.curIndents = 1;
-        
+
         // All statements end in newline
         this.newline();
     }

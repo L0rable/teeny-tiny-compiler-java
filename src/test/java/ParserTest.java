@@ -43,6 +43,28 @@ class ParserTest {
      }
 
      @Test
+     void LABELStatementTest() throws IOException {
+          String sourceCode = "LABEL goBack" + "\n";
+          String statements = "    goBack:" + "\n";
+          String expected = expectedProgram(statements);
+          emitProgram(sourceCode);
+          String actual = Files.readString(outputFile.toPath());
+          Assertions.assertEquals(expected, actual);
+     }
+
+     @Test
+     void GOTOStatementTest() throws IOException {
+          String sourceCode = "LABEL goBack" + "\n" +
+                  "GOTO goBack" + "\n";
+          String statements = "    goBack:" + "\n" +
+                  "    goto goBack;" + "\n";
+          String expected = expectedProgram(statements);
+          emitProgram(sourceCode);
+          String actual = Files.readString(outputFile.toPath());
+          Assertions.assertEquals(expected, actual);
+     }
+
+     @Test
      void PRINTStatementTest1() throws IOException {
           String sourceCode = "PRINT \"Hello World!\"\n";
           String statements = "    printf(\"Hello World!\\n\");" + "\n";
@@ -56,6 +78,44 @@ class ParserTest {
      void PRINTStatementTest2() throws IOException {
           String sourceCode = "PRINT 99\n";
           String statements = "    printf(\"%.2f\\n\", (float)(99));" + "\n";
+          String expected = expectedProgram(statements);
+          emitProgram(sourceCode);
+          String actual = Files.readString(outputFile.toPath());
+          Assertions.assertEquals(expected, actual);
+     }
+
+     @Test
+     void INPUTStatementTest() throws IOException {
+          String sourceCode = "INPUT nums" + "\n";
+          String statements = "    float nums;" + "\n" +
+                  "    if (0 == scanf(\"%f\", &nums)) {" + "\n" +
+                  "        nums = 0;" + "\n" +
+                  "        scanf(\"%*s\");" + "\n" +
+                  "    }" + "\n";
+          String expected = expectedProgram(statements);
+          emitProgram(sourceCode);
+          String actual = Files.readString(outputFile.toPath());
+          Assertions.assertEquals(expected, actual);
+     }
+
+     @Test
+     void LETStatementTest() throws IOException {
+          String sourceCode = "LET a = 0" + "\n";
+          String statements = "    float a;" + "\n" +
+                  "    a = 0;" + "\n";
+          String expected = expectedProgram(statements);
+          emitProgram(sourceCode);
+          String actual = Files.readString(outputFile.toPath());
+          Assertions.assertEquals(expected, actual);
+     }
+
+     @Test
+     void LETThenPRINTTest() throws IOException {
+          String sourceCode = "LET a = 0" + "\n" +
+                  "PRINT a" + "\n";
+          String statements = "    float a;" + "\n" +
+                  "    a = 0;" + "\n" +
+                  "    printf(\"%" + ".2f\\n\", (float)(a));" + "\n";
           String expected = expectedProgram(statements);
           emitProgram(sourceCode);
           String actual = Files.readString(outputFile.toPath());
@@ -108,66 +168,6 @@ class ParserTest {
           String statements = "    while (1==1) {" + "\n" +
                   "        printf(\"WHILE statement TRUE\\n\");" + "\n" +
                   "        printf(\"1 == 1\\n\");" + "\n" +
-                  "    }" + "\n";
-          String expected = expectedProgram(statements);
-          emitProgram(sourceCode);
-          String actual = Files.readString(outputFile.toPath());
-          Assertions.assertEquals(expected, actual);
-     }
-
-     @Test
-     void LABELStatementTest() throws IOException {
-          String sourceCode = "LABEL goBack" + "\n";
-          String statements = "    goBack:" + "\n";
-          String expected = expectedProgram(statements);
-          emitProgram(sourceCode);
-          String actual = Files.readString(outputFile.toPath());
-          Assertions.assertEquals(expected, actual);
-     }
-
-     @Test
-     void GOTOStatementTest() throws IOException {
-          String sourceCode = "LABEL goBack" + "\n" +
-                  "GOTO goBack" + "\n";
-          String statements = "    goBack:" + "\n" +
-                  "    goto goBack;" + "\n";
-          String expected = expectedProgram(statements);
-          emitProgram(sourceCode);
-          String actual = Files.readString(outputFile.toPath());
-          Assertions.assertEquals(expected, actual);
-     }
-
-     @Test
-     void LETStatementTest() throws IOException {
-          String sourceCode = "LET a = 0" + "\n";
-          String statements = "    float a;" + "\n" +
-                  "    a = 0;" + "\n";
-          String expected = expectedProgram(statements);
-          emitProgram(sourceCode);
-          String actual = Files.readString(outputFile.toPath());
-          Assertions.assertEquals(expected, actual);
-     }
-
-     @Test
-     void LETThenPRINTTest() throws IOException {
-          String sourceCode = "LET a = 0" + "\n" +
-                  "PRINT a" + "\n";
-          String statements = "    float a;" + "\n" +
-                  "    a = 0;" + "\n" +
-                  "    printf(\"%" + ".2f\\n\", (float)(a));" + "\n";
-          String expected = expectedProgram(statements);
-          emitProgram(sourceCode);
-          String actual = Files.readString(outputFile.toPath());
-          Assertions.assertEquals(expected, actual);
-     }
-
-     @Test
-     void INPUTStatementTest() throws IOException {
-          String sourceCode = "INPUT nums" + "\n";
-          String statements = "    float nums;" + "\n" +
-                  "    if (0 == scanf(\"%f\", &nums)) {" + "\n" +
-                  "        nums = 0;" + "\n" +
-                  "        scanf(\"%*s\");" + "\n" +
                   "    }" + "\n";
           String expected = expectedProgram(statements);
           emitProgram(sourceCode);

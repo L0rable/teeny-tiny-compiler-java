@@ -53,6 +53,51 @@ class LexerTest {
         }
 
         @Test
+        void getTokenEOFTest() {
+            sourceCode = "\0";
+            String expected = "";
+            Token tokenEOF = new Token(expected, TokenType.EOF);
+            checkTokensEqual(sourceCode, tokenEOF);
+        }
+
+        @Test
+        void getTokenNEWLINETest() {
+            sourceCode = "\n";
+            String expected = "\\n";
+            Token tokenNEWLINE = new Token(expected, TokenType.NEWLINE);
+            checkTokensEqual(sourceCode, tokenNEWLINE);
+        }
+
+        @Test
+        void getTokenNUMBERTest() {
+            sourceCode = "99";
+            Token tokenNUMBER = new Token(sourceCode, TokenType.NUMBER);
+            checkTokensEqual(sourceCode, tokenNUMBER);
+        }
+
+        @Test
+        void getTokenNUMBERTest1() {
+            sourceCode = "99.99";
+            Token tokenNUMBER = new Token(sourceCode, TokenType.NUMBER);
+            checkTokensEqual(sourceCode, tokenNUMBER);
+        }
+
+        @Test
+        void getTokenIDENTIFIERTest() {
+            sourceCode = "varName";
+            Token tokenIDENTIFIER = new Token(sourceCode, TokenType.IDENTIFIER);
+            checkTokensEqual(sourceCode, tokenIDENTIFIER);
+        }
+
+        @Test
+        void getTokenSTRINGTest() {
+            sourceCode = "\"Hello World!\"";
+            String expected = "Hello World!";
+            Token tokenSTRING = new Token(expected, TokenType.STRING);
+            checkTokensEqual(sourceCode, tokenSTRING);
+        }
+
+        @Test
         void getTokenEQTest() {
             sourceCode = "=";
             Token tokenEQ = new Token(sourceCode, TokenType.EQ);
@@ -127,51 +172,6 @@ class LexerTest {
             sourceCode = ">=";
             Token tokenGTEQ = new Token(sourceCode, TokenType.GTEQ);
             checkTokensEqual(sourceCode, tokenGTEQ);
-        }
-
-        @Test
-        void getTokenSTRINGTest() {
-            sourceCode = "\"Hello World!\"";
-            String expected = "Hello World!";
-            Token tokenSTRING = new Token(expected, TokenType.STRING);
-            checkTokensEqual(sourceCode, tokenSTRING);
-        }
-
-        @Test
-        void getTokenNUMBERTest() {
-            sourceCode = "99";
-            Token tokenNUMBER = new Token(sourceCode, TokenType.NUMBER);
-            checkTokensEqual(sourceCode, tokenNUMBER);
-        }
-
-        @Test
-        void getTokenNUMBERTest1() {
-            sourceCode = "99.99";
-            Token tokenNUMBER = new Token(sourceCode, TokenType.NUMBER);
-            checkTokensEqual(sourceCode, tokenNUMBER);
-        }
-
-        @Test
-        void getTokenIDENTIFIERTest() {
-            sourceCode = "varName";
-            Token tokenIDENTIFIER = new Token(sourceCode, TokenType.IDENTIFIER);
-            checkTokensEqual(sourceCode, tokenIDENTIFIER);
-        }
-
-        @Test
-        void getTokenNEWLINETest() {
-            sourceCode = "\n";
-            String expected = "\\n";
-            Token tokenNEWLINE = new Token(expected, TokenType.NEWLINE);
-            checkTokensEqual(sourceCode, tokenNEWLINE);
-        }
-
-        @Test
-        void getTokenEOFTest() {
-            sourceCode = "\0";
-            String expected = "";
-            Token tokenEOF = new Token(expected, TokenType.EOF);
-            checkTokensEqual(sourceCode, tokenEOF);
         }
     }
 }
