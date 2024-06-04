@@ -1,5 +1,5 @@
 # Teeny Tiny Compiler in Java
-First off thanks to [Austin](https://austinhenley.com/index.html) for writing up the 3 part article on [building a compiler](https://austinhenley.com/blog/teenytinycompiler1.html) which compiles Teeny Tiny (similar to BASIC) to C. 
+First off thanks to [Austin](https://austinhenley.com/index.html) for writing up the 3 part article on [building a compiler](https://austinhenley.com/blog/teenytinycompiler1.html) which compiles Teeny Tiny (similar to BASIC) to C.
 Instead of using Python, I decided to do it Java because why not.
 
 ## General Overview
@@ -42,7 +42,7 @@ Here are the features I have implemented:
 - Indentation
 
 ## Future features
-There are a bunch that are list on [last part](https://austinhenley.com/blog/teenytinycompiler3.html) of the tutorial article. I would like to focus on Testing through Unit Tests, Integration and End-to-End Tests.
+There are a bunch that are list on [last part](https://austinhenley.com/blog/teenytinycompiler3.html) of the tutorial article.
 <br>
 
 ## Sample Code
@@ -61,3 +61,18 @@ WHILE nums > 0 REPEAT
     LET nums = nums - 1
 ENDWHILE
 ```
+
+## Build & Run
+Using the Exec Maven Plugin to run and test the compiler. I have also included Apache Maven JAR Plugin to build JAR executables.
+<br>
+Run default source file (helloWorld.teenytiny): <br>
+```mvn compile Exec:java```
+<br>
+Run a test program file: <br>
+```mvn compile exec:java -Dexec.args="average.teenytiny testPrograms"```
+<br>
+Run a specific program file: <br>
+```mvn compile exec:java -Dexec.args="~/Desktop/average.teenytiny"```
+<br>
+Run tests: <br>
+```mvn test```

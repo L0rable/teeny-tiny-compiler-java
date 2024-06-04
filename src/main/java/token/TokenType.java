@@ -32,7 +32,7 @@ public enum TokenType {
     GT(210),
     GTEQ(211);
     
-    public int value;
+    public final int value;
     
     private TokenType(int value) {
         this.value = value;
