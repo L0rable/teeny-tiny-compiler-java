@@ -1,10 +1,8 @@
 import lexer.Lexer;
 import parser.Parser;
 import emitter.Emitter;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+
+import java.io.*;
 
 public class Main {
     private static String readFromFile(InputStream inputStream) throws IOException {
@@ -25,7 +23,20 @@ public class Main {
             System.out.println("Teeny Tiny Compiler");
 
             ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-            InputStream sourceFile = classloader.getResourceAsStream("programs/helloWorld.teenytiny");
+            InputStream sourceFile;
+            if (args.length > 1) {
+                if (args[1].equals("testPrograms")) {
+                    sourceFile = classloader.getResourceAsStream("srcPrograms/" + args[0]);
+                } else {
+                    sourceFile = new FileInputStream(args[0]);
+                }
+            } else if (args.length > 0) {
+                sourceFile = new FileInputStream(args[0]);
+            } else {
+                System.out.println("Default Source File: helloWorld.teenytiny");
+                sourceFile = classloader.getResourceAsStream("srcPrograms/helloWorld.teenytiny");
+            }
+
             String source = readFromFile(sourceFile);
 
             Lexer lexer = new Lexer(source);
@@ -36,6 +47,6 @@ public class Main {
             emitter.writeFile();
             System.out.println("Compiling completed.");
         }
-        catch (IOException e) { System.err.println(e); }
+        catch (IOException e) { e.printStackTrace(); }
     }
 }

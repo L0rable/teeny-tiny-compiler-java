@@ -24,7 +24,7 @@ hs_err_pid*
 replay_pid*
 
 # C output file
-*.c
+output.c
 
 # Maven
 target/
