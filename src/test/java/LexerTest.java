@@ -173,5 +173,19 @@ class LexerTest {
             Token tokenGTEQ = new Token(sourceCode, TokenType.GTEQ);
             checkTokensEqual(sourceCode, tokenGTEQ);
         }
+
+        @Test
+        void getTokenPARENTHESESLEFTTest() {
+            sourceCode = "(";
+            Token tokenPARENTHESESLEFT = new Token(sourceCode, TokenType.PARENTHESESLEFT);
+            checkTokensEqual(sourceCode, tokenPARENTHESESLEFT);
+        }
+
+        @Test
+        void getTokenPARENTHESESRIGHTTest() {
+            sourceCode = ")";
+            Token tokenPARENTHESESRIGHT = new Token(sourceCode, TokenType.PARENTHESESRIGHT);
+            checkTokensEqual(sourceCode, tokenPARENTHESESRIGHT);
+        }
     }
 }

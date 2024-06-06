@@ -28,7 +28,7 @@ newline ::= '\n'+
 3. [Emitter](https://austinhenley.com/blog/teenytinycompiler3.html): Produces the output code and then writes it to a file.
 
 ## Current features
-This includes the features from the tutorial and some:
+This includes the features from the tutorial:
 - Numerical variables
 - Basic arithmetic
 - If statements
@@ -40,6 +40,7 @@ This includes the features from the tutorial and some:
 
 Here are the features I have implemented:
 - Indentation
+- Parentheses for expressions
 
 ## Future features
 There are a bunch that are list on [last part](https://austinhenley.com/blog/teenytinycompiler3.html) of the tutorial article.

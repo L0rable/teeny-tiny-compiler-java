@@ -30,8 +30,9 @@ public enum TokenType {
     LT(208),
     LTEQ(209),
     GT(210),
-    GTEQ(211);
-    
+    GTEQ(211),
+    PARENTHESESLEFT(212),
+    PARENTHESESRIGHT(213);
     public final int value;
     
     private TokenType(int value) {

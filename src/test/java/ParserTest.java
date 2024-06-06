@@ -16,10 +16,7 @@ class ParserTest {
 
      @BeforeEach
      void init() {
-          String sampleSourceCode = "PRINT \"Hello World!\"";
-          this.lexer = new Lexer(sampleSourceCode);
           this.emitter = new Emitter(outputFileLocation);
-          this.parser = new Parser(this.lexer, this.emitter);
           this.outputFile = new File(outputFileLocation);
      }
 
@@ -36,17 +33,17 @@ class ParserTest {
           emitter.writeFile();
      }
 
-     String expectedProgram(String statements) {
+     String expectedProgram(String expectedOutput) {
           return "#include <stdio.h>" + "\n" + "\n" + "int main() {" + "\n" +
-                  statements +
+                  expectedOutput +
                   "    " + "return 0;" + "\n" + "}" + "\n";
      }
 
      @Test
      void LABELStatementTest() throws IOException {
           String sourceCode = "LABEL goBack" + "\n";
-          String statements = "    goBack:" + "\n";
-          String expected = expectedProgram(statements);
+          String expectedOutput = "    goBack:" + "\n";
+          String expected = expectedProgram(expectedOutput);
           emitProgram(sourceCode);
           String actual = Files.readString(outputFile.toPath());
           Assertions.assertEquals(expected, actual);
@@ -56,9 +53,9 @@ class ParserTest {
      void GOTOStatementTest() throws IOException {
           String sourceCode = "LABEL goBack" + "\n" +
                   "GOTO goBack" + "\n";
-          String statements = "    goBack:" + "\n" +
+          String expectedOutput = "    goBack:" + "\n" +
                   "    goto goBack;" + "\n";
-          String expected = expectedProgram(statements);
+          String expected = expectedProgram(expectedOutput);
           emitProgram(sourceCode);
           String actual = Files.readString(outputFile.toPath());
           Assertions.assertEquals(expected, actual);
@@ -67,8 +64,8 @@ class ParserTest {
      @Test
      void PRINTStatementTest1() throws IOException {
           String sourceCode = "PRINT \"Hello World!\"\n";
-          String statements = "    printf(\"Hello World!\\n\");" + "\n";
-          String expected = expectedProgram(statements);
+          String expectedOutput = "    printf(\"Hello World!\\n\");" + "\n";
+          String expected = expectedProgram(expectedOutput);
           emitProgram(sourceCode);
           String actual = Files.readString(outputFile.toPath());
           Assertions.assertEquals(expected, actual);
@@ -77,8 +74,8 @@ class ParserTest {
      @Test
      void PRINTStatementTest2() throws IOException {
           String sourceCode = "PRINT 99\n";
-          String statements = "    printf(\"%.2f\\n\", (float)(99));" + "\n";
-          String expected = expectedProgram(statements);
+          String expectedOutput = "    printf(\"%.2f\\n\", (float)(99));" + "\n";
+          String expected = expectedProgram(expectedOutput);
           emitProgram(sourceCode);
           String actual = Files.readString(outputFile.toPath());
           Assertions.assertEquals(expected, actual);
@@ -87,12 +84,12 @@ class ParserTest {
      @Test
      void INPUTStatementTest() throws IOException {
           String sourceCode = "INPUT nums" + "\n";
-          String statements = "    float nums;" + "\n" +
+          String expectedOutput = "    float nums;" + "\n" +
                   "    if (0 == scanf(\"%f\", &nums)) {" + "\n" +
                   "        nums = 0;" + "\n" +
                   "        scanf(\"%*s\");" + "\n" +
                   "    }" + "\n";
-          String expected = expectedProgram(statements);
+          String expected = expectedProgram(expectedOutput);
           emitProgram(sourceCode);
           String actual = Files.readString(outputFile.toPath());
           Assertions.assertEquals(expected, actual);
@@ -101,9 +98,9 @@ class ParserTest {
      @Test
      void LETStatementTest() throws IOException {
           String sourceCode = "LET a = 0" + "\n";
-          String statements = "    float a;" + "\n" +
+          String expectedOutput = "    float a;" + "\n" +
                   "    a = 0;" + "\n";
-          String expected = expectedProgram(statements);
+          String expected = expectedProgram(expectedOutput);
           emitProgram(sourceCode);
           String actual = Files.readString(outputFile.toPath());
           Assertions.assertEquals(expected, actual);
@@ -113,10 +110,10 @@ class ParserTest {
      void LETThenPRINTTest() throws IOException {
           String sourceCode = "LET a = 0" + "\n" +
                   "PRINT a" + "\n";
-          String statements = "    float a;" + "\n" +
+          String expectedOutput = "    float a;" + "\n" +
                   "    a = 0;" + "\n" +
                   "    printf(\"%" + ".2f\\n\", (float)(a));" + "\n";
-          String expected = expectedProgram(statements);
+          String expected = expectedProgram(expectedOutput);
           emitProgram(sourceCode);
           String actual = Files.readString(outputFile.toPath());
           Assertions.assertEquals(expected, actual);
@@ -126,8 +123,8 @@ class ParserTest {
      void IFStatementTest1() throws IOException {
           String sourceCode = "IF 1 == 1 THEN" + "\n" +
                   "ENDIF" + "\n";
-          String statements = "    if (1==1) {" + "}" + "\n";
-          String expected = expectedProgram(statements);
+          String expectedOutput = "    if (1==1) {" + "}" + "\n";
+          String expected = expectedProgram(expectedOutput);
           emitProgram(sourceCode);
           String actual = Files.readString(outputFile.toPath());
           Assertions.assertEquals(expected, actual);
@@ -139,11 +136,11 @@ class ParserTest {
                   "    PRINT \"IF statement TRUE\"" + "\n" +
                   "    PRINT \"1 == 1\"" + "\n" +
                   "ENDIF" + "\n";
-          String statements = "    if (1==1) {" + "\n" +
+          String expectedOutput = "    if (1==1) {" + "\n" +
                   "        printf(\"IF statement TRUE\\n\");" + "\n" +
                   "        printf(\"1 == 1\\n\");" + "\n" +
                   "    }" + "\n";
-          String expected = expectedProgram(statements);
+          String expected = expectedProgram(expectedOutput);
           emitProgram(sourceCode);
           String actual = Files.readString(outputFile.toPath());
           Assertions.assertEquals(expected, actual);
@@ -152,8 +149,8 @@ class ParserTest {
      @Test
      void WHILEStatementTest1() throws IOException {
           String sourceCode = "WHILE 1 == 1 REPEAT" + "\n" + "ENDWHILE" + "\n";
-          String statements = "    while (1==1) {" + "}" + "\n";
-          String expected = expectedProgram(statements);
+          String expectedOutput = "    while (1==1) {" + "}" + "\n";
+          String expected = expectedProgram(expectedOutput);
           emitProgram(sourceCode);
           String actual = Files.readString(outputFile.toPath());
           Assertions.assertEquals(expected, actual);
@@ -165,11 +162,44 @@ class ParserTest {
                   "    PRINT \"WHILE statement TRUE\"" + "\n" +
                   "    PRINT \"1 == 1\"" + "\n" +
                   "ENDWHILE" + "\n";
-          String statements = "    while (1==1) {" + "\n" +
+          String expectedOutput = "    while (1==1) {" + "\n" +
                   "        printf(\"WHILE statement TRUE\\n\");" + "\n" +
                   "        printf(\"1 == 1\\n\");" + "\n" +
                   "    }" + "\n";
-          String expected = expectedProgram(statements);
+          String expected = expectedProgram(expectedOutput);
+          emitProgram(sourceCode);
+          String actual = Files.readString(outputFile.toPath());
+          Assertions.assertEquals(expected, actual);
+     }
+
+     @Test
+     void PARENTHESESStatmentTest1() throws IOException {
+          String sourceCode = "LET a = (1 + 1)" + "\n";
+          String expectedOutput = "    float a;" + "\n" +
+                  "    a = (1+1);" + "\n";
+          String expected = expectedProgram(expectedOutput);
+          emitProgram(sourceCode);
+          String actual = Files.readString(outputFile.toPath());
+          Assertions.assertEquals(expected, actual);
+     }
+
+     @Test
+     void PARENTHESESStatmentTest2() throws IOException {
+          String sourceCode = "LET a = (1 + 1) + (2 * 6)" + "\n";
+          String expectedOutput = "    float a;" + "\n" +
+                  "    a = (1+1)+(2*6);" + "\n";
+          String expected = expectedProgram(expectedOutput);
+          emitProgram(sourceCode);
+          String actual = Files.readString(outputFile.toPath());
+          Assertions.assertEquals(expected, actual);
+     }
+
+     @Test
+     void PARENTHESESStatmentTest3() throws IOException {
+          String sourceCode = "LET a = ((1 + 1) + (2 * 6))" + "\n";
+          String expectedOutput = "    float a;" + "\n" +
+                  "    a = ((1+1)+(2*6));" + "\n";
+          String expected = expectedProgram(expectedOutput);
           emitProgram(sourceCode);
           String actual = Files.readString(outputFile.toPath());
           Assertions.assertEquals(expected, actual);

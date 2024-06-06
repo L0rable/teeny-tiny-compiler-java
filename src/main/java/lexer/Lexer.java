@@ -167,6 +167,12 @@ public class Lexer {
             else
                 token = new Token(">", TokenType.GT);
         }
+        else if (this.curChar == '(') {
+            token = new Token("(", TokenType.PARENTHESESLEFT);
+        }
+        else if (this.curChar == ')') {
+            token = new Token(")", TokenType.PARENTHESESRIGHT);
+        }
         else {
             token = new Token();
             this.abort("Unknown Token: " + this.curChar);

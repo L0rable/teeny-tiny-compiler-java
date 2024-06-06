@@ -41,7 +41,7 @@ class MainTest {
         File expectedOutputFile = new File(expectedOutputProgramLocation);
         String[] args = new String[0];
         Main.main(args);
-        compareFileContents(expectedOutputFile, outputFile);
+        compareFileContents(expectedOutputFile, this.outputFile);
     }
 
     @Test
@@ -51,7 +51,7 @@ class MainTest {
         String[] args = new String[1];
         args[0] = sourceProgramsDir + "helloWorld.teenytiny";
         Main.main(args);
-        compareFileContents(expectedOutputFile, outputFile);
+        compareFileContents(expectedOutputFile, this.outputFile);
     }
 
     @Test
@@ -62,7 +62,7 @@ class MainTest {
         args[0] = sourceProgramsDir + "helloWorld.teenytiny";
         args[1] = "";
         Main.main(args);
-        compareFileContents(expectedOutputFile, outputFile);
+        compareFileContents(expectedOutputFile, this.outputFile);
     }
 
     @Test
@@ -73,7 +73,7 @@ class MainTest {
         args[0] = sourceProgramsDir + "helloWorld.teenytiny";
         args[1] = "noTestPrograms";
         Main.main(args);
-        compareFileContents(expectedOutputFile, outputFile);
+        compareFileContents(expectedOutputFile, this.outputFile);
     }
 
     @Nested

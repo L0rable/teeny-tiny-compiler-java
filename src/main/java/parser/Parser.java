@@ -80,7 +80,7 @@ public class Parser {
             this.nextToken();
         }
         else {
-            this.abort("Unexpected token at " + this.curToken.getTokenText());
+            this.abort("primary: Unexpected token at " + this.curToken.getTokenText());
         }
     }
     
@@ -93,7 +93,7 @@ public class Parser {
         this.primary();
     }
     
-    // term ::= unary {( "/" | "*" ) unary
+    // term ::= unary {( "/" | "*" ) unary}
     private void term() {
         this.unary();
         while (this.checkToken(TokenType.SLASH) || this.checkToken(TokenType.ASTERISK)) {
@@ -104,12 +104,60 @@ public class Parser {
     }
     
     // expression ::= term {( "-" | "+" ) term}
+    //          || ("(")+ expression (")")+
+    //          || ("(")+ expression (")")+ {( "/" | "*" | "-" | "+" )  ("(")+ expression (")")+}
     private void expression() {
-        this.term();
-        while (this.checkToken(TokenType.MINUS) || this.checkToken(TokenType.PLUS)) {
-            this.emitter.emit(this.curToken.getTokenText());
-            this.nextToken();
+        if (this.checkToken(TokenType.PARENTHESESLEFT)) {
+            boolean nextExpression = true;
+            int parentheses = 0;
+            while (nextExpression) {
+                while (this.checkToken(TokenType.PARENTHESESLEFT)) {
+                    parentheses++;
+                    this.emitter.emit(this.curToken.getTokenText());
+                    this.nextToken();
+                }
+                while (!this.checkToken(TokenType.PARENTHESESRIGHT)) {
+                    this.term();
+                    while (this.checkToken(TokenType.MINUS) || this.checkToken(TokenType.PLUS)) {
+                        this.emitter.emit(this.curToken.getTokenText());
+                        this.nextToken();
+                        this.term();
+                    }
+                }
+                for (int i = 0; i < parentheses; i++) {
+                    if (!this.checkToken(TokenType.PARENTHESESRIGHT)) {
+                        this.abort("expression: Expected ')' character at " + this.curToken.getTokenText());
+                    }
+                    parentheses--;
+                    this.emitter.emit(this.curToken.getTokenText());
+                    this.nextToken();
+                }
+
+                nextExpression = this.checkToken(TokenType.SLASH) || this.checkToken(TokenType.ASTERISK)
+                        || this.checkToken(TokenType.MINUS) || this.checkToken(TokenType.PLUS);
+                if (nextExpression) {
+                    this.emitter.emit(this.curToken.getTokenText());
+                    this.nextToken();
+                }
+            }
+
+            if (parentheses >= 1) {
+                if (this.checkToken(TokenType.PARENTHESESRIGHT)) {
+                    this.emitter.emit(this.curToken.getTokenText());
+                    this.nextToken();
+                }
+                else {
+                    this.abort("expression: Expected ')' character at " + this.curToken.getTokenText());
+                }
+            }
+        }
+        else {
             this.term();
+            while (this.checkToken(TokenType.MINUS) || this.checkToken(TokenType.PLUS)) {
+                this.emitter.emit(this.curToken.getTokenText());
+                this.nextToken();
+                this.term();
+            }
         }
     }
 
@@ -123,7 +171,7 @@ public class Parser {
             this.expression();
         }
         else {
-            this.abort("Unexpected comparison operator at " + this.curToken.getTokenText());
+            this.abort("comparison: Unexpected comparison operator at " + this.curToken.getTokenText());
         }
         // Can have 0 or more (comparison operator -> expression)
         while (this.isComparisonOperator()) {
