@@ -21,13 +21,25 @@ public class Token {
     public TokenType getTokenKind() {
         return this.tokenKind;
     }
-    
+
     public static TokenType checkIfKeyword(String tokenString) {
         for (TokenType kind : TokenType.values()) {
             boolean checkIfKeyword = kind.value >= 100 && kind.value < 200 && kind.toString().equals(tokenString);
-            if (checkIfKeyword)
+            if (checkIfKeyword) {
                 return kind;
+            }
         }
         return null;
+    }
+
+    public static String convertKeyword(TokenType type) {
+        /*return switch (type) {
+//            case AND -> "&&";
+            case AND -> "AND"; // this is confusing me
+            case OR -> "||";
+            case NOT -> "!";
+            default -> null;
+        };*/
+        return "&&";
     }
 }

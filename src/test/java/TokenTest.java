@@ -95,5 +95,13 @@ class TokenTest {
             Token actualToken = new Token(expected, TokenType.ENDWHILE);
             Assertions.assertEquals(expectedToken, actualToken.getTokenKind());
         }
+
+        @Test
+        void checkIfAND() {
+            String expected = "AND";
+            TokenType expectedToken = Token.checkIfKeyword(expected);
+            Token actualToken = new Token(expected, TokenType.AND);
+            Assertions.assertEquals(expectedToken, actualToken.getTokenKind());
+        }
     }
 }

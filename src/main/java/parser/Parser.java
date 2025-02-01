@@ -56,6 +56,11 @@ public class Parser {
                 || this.checkToken(TokenType.LT) || this.checkToken(TokenType.LTEQ)
                 || this.checkToken(TokenType.GT) || this.checkToken(TokenType.GTEQ);
     }
+
+    private boolean isLogicalOperator() {
+//        return this.checkToken(TokenType.AND) || this.checkToken(TokenType.OR) || this.checkToken(TokenType.NOT);
+        return this.checkToken(TokenType.AND);
+    }
     
     // newline ::= '\n'+
     private void newline() {
@@ -104,8 +109,8 @@ public class Parser {
     }
     
     // expression ::= term {( "-" | "+" ) term}
-    //          || ("(")+ expression (")")+
-    //          || ("(")+ expression (")")+ {( "/" | "*" | "-" | "+" )  ("(")+ expression (")")+}
+    //      | ("(")+ expression (")")+
+    //      | ("(")+ expression (")")+ {( "/" | "*" | "-" | "+" )  ("(")+ expression (")")+}
     private void expression() {
         if (this.checkToken(TokenType.PARENTHESESLEFT)) {
             boolean nextExpression = true;
@@ -161,20 +166,20 @@ public class Parser {
         }
     }
 
-    // comparison ::= expression (("==" | "!=" | ">" | ">=" | "<" | "<=") expression)+
+    // comparison ::= expression (("NOT" | "AND" | "OR") expression)+
+    //          | expression (("==" | "!=" | ">" | ">=" | "<" | "<=") expression)+
     private void comparison() {
         this.expression();
         // Must be at least 1 (comparison operator -> expression)
-        if (this.isComparisonOperator()) {
+        if (this.isLogicalOperator() || this.isComparisonOperator()) {
             this.emitter.emit(this.curToken.getTokenText());
             this.nextToken();
             this.expression();
-        }
-        else {
-            this.abort("comparison: Unexpected comparison operator at " + this.curToken.getTokenText());
+        } else {
+            this.abort("comparison: Unexpected logical/comparison operator at " + this.curToken.getTokenText());
         }
         // Can have 0 or more (comparison operator -> expression)
-        while (this.isComparisonOperator()) {
+        while (this.isLogicalOperator() || this.isComparisonOperator()) {
             this.emitter.emit(this.curToken.getTokenText());
             this.nextToken();
             this.expression();

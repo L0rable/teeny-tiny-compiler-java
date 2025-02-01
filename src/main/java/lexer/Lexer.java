@@ -96,13 +96,14 @@ public class Lexer {
             }
 
             String tokenText = this.source.substring(startPos, this.curPos + 1);
-            TokenType keyword = Token.checkIfKeyword(tokenText);
+            TokenType tokenType = Token.checkIfKeyword(tokenText);
 
-            if (keyword == null) {
+            if (tokenType == null) {
                 token = new Token(tokenText, TokenType.IDENTIFIER);
             }
             else {
-                token = new Token(tokenText, keyword);
+                String convertedTokenText = Token.convertKeyword(tokenType);
+                token = new Token(convertedTokenText, tokenType);
             }
         }
         else if (this.curChar == '\"') {

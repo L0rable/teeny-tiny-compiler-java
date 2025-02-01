@@ -204,4 +204,15 @@ class ParserTest {
           String actual = Files.readString(outputFile.toPath());
           Assertions.assertEquals(expected, actual);
      }
+
+     @Test
+     void testStatementUsingLogicalANDKeyword() throws IOException {
+          String sourceCode = "IF 1 == 1 AND 2 == 2 THEN" + "\n" +
+                  "ENDIF" + "\n";
+          String expectedOutput = "    if (1==1&&2==2) {" + "}" + "\n";
+          String expected = expectedProgram(expectedOutput);
+          emitProgram(sourceCode);
+          String actual = Files.readString(outputFile.toPath());
+          Assertions.assertEquals(expected, actual);
+     }
 }
