@@ -42,6 +42,7 @@ This includes the features from the tutorial:
 Here are the features I have implemented:
 - Indentation
 - Parentheses for expressions
+- Logical Operators (AND,OR,NOT)
 
 ## Future features
 There are a bunch that are list on [last part](https://austinhenley.com/blog/teenytinycompiler3.html) of the tutorial article.
@@ -68,7 +69,7 @@ ENDWHILE
 Using the Exec Maven Plugin to run and test the compiler. I have also included Apache Maven JAR Plugin to build JAR executables.
 <br>
 Run default source file (helloWorld.teenytiny): <br>
-```mvn compile Exec:java```
+```mvn compile exec:java```
 <br>
 Run a test program file: <br>
 ```mvn compile exec:java -Dexec.args="average.teenytiny testPrograms"```
@@ -78,3 +79,5 @@ Run a specific program file: <br>
 <br>
 Run tests: <br>
 ```mvn test```
+Run specific test: <br>
+```mvn test -Dtest=TestClass$NestedTests#Test```
