@@ -7,117 +7,80 @@ import token.TokenType;
 class TokenTest {
 
     @Nested
-    class checkKeywordTests {
-        @Test
-        void checkIfLABEL() {
-            String expected = "LABEL";
-            TokenType expectedToken = Token.checkIfKeyword(expected);
-            Token actualToken = new Token(expected, TokenType.LABEL);
-            Assertions.assertEquals(expectedToken, actualToken.getTokenKind());
+    class SingularKeyword_IdentifyKeywordToken_CompareTokenOutput {
+        void checkKeywordTokensEqual(String sourceCode, TokenType expectedToken) {
+            TokenType actualToken = Token.checkIfKeyword(sourceCode);
+            Assertions.assertEquals(expectedToken, actualToken);
         }
 
         @Test
-        void checkIfGOTO() {
-            String expected = "GOTO";
-            TokenType expectedToken = Token.checkIfKeyword(expected);
-            Token actualToken = new Token(expected, TokenType.GOTO);
-            Assertions.assertEquals(expectedToken, actualToken.getTokenKind());
+        void IdentifyKeywordToken_LABEL() {
+            checkKeywordTokensEqual("LABEL", TokenType.LABEL);
         }
 
         @Test
-        void checkIfPRINT() {
-            String expected = "PRINT";
-            TokenType expectedToken = Token.checkIfKeyword(expected);
-            Token actualToken = new Token(expected, TokenType.PRINT);
-            Assertions.assertEquals(expectedToken, actualToken.getTokenKind());
+        void IdentifyKeywordToken_GOTO() {
+            checkKeywordTokensEqual("GOTO", TokenType.GOTO);
         }
 
         @Test
-        void checkIfINPUT() {
-            String expected = "INPUT";
-            TokenType expectedToken = Token.checkIfKeyword(expected);
-            Token actualToken = new Token(expected, TokenType.INPUT);
-            Assertions.assertEquals(expectedToken, actualToken.getTokenKind());
+        void IdentifyKeywordToken_PRINT() {
+            checkKeywordTokensEqual("PRINT", TokenType.PRINT);
         }
 
         @Test
-        void checkIfLET() {
-            String expected = "LET";
-            TokenType expectedToken = Token.checkIfKeyword(expected);
-            Token actualToken = new Token(expected, TokenType.LET);
-            Assertions.assertEquals(expectedToken, actualToken.getTokenKind());
+        void IdentifyKeywordToken_INPUT() {
+            checkKeywordTokensEqual("INPUT", TokenType.INPUT);
         }
 
         @Test
-        void checkIfIF() {
-            String expected = "IF";
-            TokenType expectedToken = Token.checkIfKeyword(expected);
-            Token actualToken = new Token(expected, TokenType.IF);
-            Assertions.assertEquals(expectedToken, actualToken.getTokenKind());
+        void IdentifyKeywordToken_LET() {
+            checkKeywordTokensEqual("LET", TokenType.LET);
         }
 
         @Test
-        void checkIfTHEN() {
-            String expected = "THEN";
-            TokenType expectedToken = Token.checkIfKeyword(expected);
-            Token actualToken = new Token(expected, TokenType.THEN);
-            Assertions.assertEquals(expectedToken, actualToken.getTokenKind());
+        void IdentifyKeywordToken_IF() {
+            checkKeywordTokensEqual("IF", TokenType.IF);
         }
 
         @Test
-        void checkIfENDIF() {
-            String expected = "ENDIF";
-            TokenType expectedToken = Token.checkIfKeyword(expected);
-            Token actualToken = new Token(expected, TokenType.ENDIF);
-            Assertions.assertEquals(expectedToken, actualToken.getTokenKind());
+        void IdentifyKeywordToken_THEN() {
+            checkKeywordTokensEqual("THEN", TokenType.THEN);
         }
 
         @Test
-        void checkIfWHILE() {
-            String expected = "WHILE";
-            TokenType expectedToken = Token.checkIfKeyword(expected);
-            Token actualToken = new Token(expected, TokenType.WHILE);
-            Assertions.assertEquals(expectedToken, actualToken.getTokenKind());
+        void IdentifyKeywordToken_ENDIF() {
+            checkKeywordTokensEqual("ENDIF", TokenType.ENDIF);
         }
 
         @Test
-        void checkIfREPEAT() {
-            String expected = "REPEAT";
-            TokenType expectedToken = Token.checkIfKeyword(expected);
-            Token actualToken = new Token(expected, TokenType.REPEAT);
-            Assertions.assertEquals(expectedToken, actualToken.getTokenKind());
+        void IdentifyKeywordToken_WHILE() {
+            checkKeywordTokensEqual("WHILE", TokenType.WHILE);
         }
 
         @Test
-        void checkIfENDWHILE() {
-            String expected = "ENDWHILE";
-            TokenType expectedToken = Token.checkIfKeyword(expected);
-            Token actualToken = new Token(expected, TokenType.ENDWHILE);
-            Assertions.assertEquals(expectedToken, actualToken.getTokenKind());
+        void IdentifyKeywordToken_REPEAT() {
+            checkKeywordTokensEqual("REPEAT", TokenType.REPEAT);
         }
 
         @Test
-        void checkIfAND() {
-            String expected = "AND";
-            TokenType expectedToken = Token.checkIfKeyword(expected);
-            Token actualToken = new Token(expected, TokenType.AND);
-            Assertions.assertEquals(expectedToken, actualToken.getTokenKind());
+        void IdentifyKeywordToken_ENDWHILE() {
+            checkKeywordTokensEqual("ENDWHILE", TokenType.ENDWHILE);
         }
 
         @Test
-        void checkIfOR() {
-            String expected = "OR";
-            TokenType expectedToken = Token.checkIfKeyword(expected);
-            Token actualToken = new Token(expected, TokenType.OR);
-            Assertions.assertEquals(expectedToken, actualToken.getTokenKind());
+        void IdentifyKeywordToken_AND() {
+            checkKeywordTokensEqual("AND", TokenType.AND);
         }
 
         @Test
-        void checkIfNOT() {
-            String expected = "NOT";
-            TokenType expectedToken = Token.checkIfKeyword(expected);
-            Token actualToken = new Token(expected, TokenType.NOT);
-            Assertions.assertEquals(expectedToken, actualToken.getTokenKind());
+        void IdentifyKeywordToken_OR() {
+            checkKeywordTokensEqual("OR", TokenType.OR);
+        }
+
+        @Test
+        void IdentifyKeywordToken_NOT() {
+            checkKeywordTokensEqual("NOT", TokenType.NOT);
         }
     }
 }

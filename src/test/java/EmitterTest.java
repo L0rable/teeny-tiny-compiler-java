@@ -22,7 +22,7 @@ class EmitterTest {
     }
 
     @Test
-    void writeNothingToFileTest() throws IOException {
+    void NoDataInSourceFile_EmitNothingToOutputFile_NoDataInOutputFile() throws IOException {
         this.emitter.writeFile();
         String expected = "";
         String actual = Files.readString(this.outputFile.toPath());
@@ -30,9 +30,9 @@ class EmitterTest {
     }
 
     @Nested
-    class EmitterMethodTests {
+    class GivenEmitterInput_VerifyEmitterOutputFile {
         @Test
-        void singleEmitTest() throws IOException {
+        void EmitSingleLine() throws IOException {
             emitter.emit("// Comment");
             emitter.writeFile();
             String expected = "// Comment";
@@ -41,7 +41,7 @@ class EmitterTest {
         }
 
         @Test
-        void multipleEmitTest() throws IOException {
+        void EmitMultipleLines() throws IOException {
             emitter.emit("// Comment");
             emitter.emit(", still a comment");
             emitter.writeFile();
@@ -51,7 +51,7 @@ class EmitterTest {
         }
 
         @Test
-        void singleEmitLineTest() throws IOException {
+        void EmitSingleLineWithNewline() throws IOException {
             emitter.emitLine("// Comment");
             emitter.writeFile();
             String expected = "// Comment\n";
@@ -60,7 +60,7 @@ class EmitterTest {
         }
 
         @Test
-        void multipleEmitLineTest() throws IOException {
+        void EmitMultipleLinesWithNewline() throws IOException {
             emitter.emitLine("// Comment");
             emitter.emitLine("float a = 0;");
             emitter.writeFile();
@@ -70,7 +70,7 @@ class EmitterTest {
         }
 
         @Test
-        void singleEmitIndentTest() throws IOException {
+        void EmitSingleLineWithSingleIndent() throws IOException {
             emitter.emitIndent(1);
             emitter.emit("// Comment");
             emitter.writeFile();
@@ -80,7 +80,7 @@ class EmitterTest {
         }
 
         @Test
-        void multipleEmitIndentTest() throws IOException {
+        void EmitSingleLineWithMultipleIndents() throws IOException {
             emitter.emitIndent(2);
             emitter.emit("// Comment");
             emitter.writeFile();
@@ -90,7 +90,7 @@ class EmitterTest {
         }
 
         @Test
-        void singleHeaderLineTest() throws IOException {
+        void EmitSingleHeaderLine() throws IOException {
             emitter.headerLine("#include <stdio.h>");
             emitter.writeFile();
             String expected = "#include <stdio.h>\n";
@@ -99,7 +99,7 @@ class EmitterTest {
         }
 
         @Test
-        void multipleHeaderLineTest() throws IOException {
+        void EmitMultipleHeaderLines() throws IOException {
             emitter.headerLine("#include <stdio.h>");
             emitter.headerLine("");
             emitter.headerLine("int main() {");
@@ -110,7 +110,7 @@ class EmitterTest {
         }
 
         @Test
-        void singleHeaderIndentTest() throws IOException {
+        void EmitSingleHeaderLineWithSingleIndent() throws IOException {
             emitter.headerIndent(1);
             emitter.headerLine("#include <stdio.h>");
             emitter.writeFile();
@@ -120,7 +120,7 @@ class EmitterTest {
         }
 
         @Test
-        void multipleHeaderIndentTest() throws IOException {
+        void EmitMultipleHeaderLinesWithSingleIndentAndMultipleIndents() throws IOException {
             emitter.headerLine("#include <stdio.h>");
             emitter.headerIndent(2);
             emitter.headerLine("");
@@ -134,9 +134,9 @@ class EmitterTest {
     }
 
     @Nested
-    class edgeCaseTests {
+    class EmitterEdgeCases {
         @Test
-        void noOverwritingTest() throws IOException {
+        void DataHasBeenEmittedToOutputFile_EmitMoreDataToOutputFile_OutputFileIsNotOverwritten() throws IOException {
             emitter.emitLine("// Hello World");
             emitter.writeFile();
             String expected = "// Hello World\n";
@@ -151,7 +151,7 @@ class EmitterTest {
         }
 
         @Test
-        void orderOfEmitTest1() throws IOException {
+        void EmitIndentThenHeaderLine() throws IOException {
             emitter.emitIndent(1);
             emitter.headerLine("#include <stdio.h>");
             emitter.writeFile();
@@ -161,7 +161,7 @@ class EmitterTest {
         }
 
         @Test
-        void orderOfEmitTest2() throws IOException {
+        void EmitLineThenHeaderIndent() throws IOException {
             emitter.emit("float a = 0");
             emitter.headerIndent(1);
             emitter.writeFile();
@@ -171,7 +171,7 @@ class EmitterTest {
         }
 
         @Test
-        void orderOfEmitTest3() throws IOException {
+        void EmitDifferentCombinationsOfEmits() throws IOException {
             emitter.headerIndent(1);
             emitter.emitIndent(2);
             emitter.headerLine("#include <stdio.h>");

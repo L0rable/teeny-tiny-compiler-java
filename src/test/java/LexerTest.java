@@ -8,7 +8,7 @@ class LexerTest {
     String sourceCode;
 
     @Test
-    void skipWhiteSpaceTest() {
+    void WhitespaceInSourceCode_IgnoreWhitespace_IdentifyTokens() {
         this.sourceCode = "      \"Hello\" \"World\"    \"!\"";
         lexer = new Lexer(sourceCode);
         Token expectedToken = new Token("Hello", TokenType.STRING);
@@ -28,7 +28,7 @@ class LexerTest {
     }
 
     @Test
-    void skipCommentTest() {
+    void CommentsInSourceCode_IgnoreComments_IdentifyTokens() {
         this.sourceCode = "# Hello World" + ", still a comment\n" +
                 "\"Hello World!\"" + "# Comment";
         lexer = new Lexer(sourceCode);
@@ -44,16 +44,16 @@ class LexerTest {
     }
 
     @Nested
-    class getTokenTests {
-        void checkTokensEqual(String actualSourceCode, Token expectedToken) {
-            lexer = new Lexer(actualSourceCode);
+    class SingularSourceCodeInput_LexerIdentifyToken_CompareLexerOutput {
+        void checkTokensEqual(String sourceCode, Token expectedToken) {
+            lexer = new Lexer(sourceCode);
             Token actualToken = lexer.getToken();
             Assertions.assertEquals(expectedToken.getTokenText(), actualToken.getTokenText());
             Assertions.assertEquals(expectedToken.getTokenKind(), actualToken.getTokenKind());
         }
 
         @Test
-        void getTokenEOFTest() {
+        void IdentifyTypesToken_EOF() {
             sourceCode = "\0";
             String expected = "";
             Token tokenEOF = new Token(expected, TokenType.EOF);
@@ -61,7 +61,7 @@ class LexerTest {
         }
 
         @Test
-        void getTokenNEWLINETest() {
+        void IdentifyTypesToken_NEWLINE() {
             sourceCode = "\n";
             String expected = "\\n";
             Token tokenNEWLINE = new Token(expected, TokenType.NEWLINE);
@@ -69,28 +69,28 @@ class LexerTest {
         }
 
         @Test
-        void getTokenNUMBERTest() {
+        void IdentifyTypesToken_NUMBER_1() {
             sourceCode = "99";
             Token tokenNUMBER = new Token(sourceCode, TokenType.NUMBER);
             checkTokensEqual(sourceCode, tokenNUMBER);
         }
 
         @Test
-        void getTokenNUMBERTest1() {
+        void IdentifyTypesToken_NUMBER_2() {
             sourceCode = "99.99";
             Token tokenNUMBER = new Token(sourceCode, TokenType.NUMBER);
             checkTokensEqual(sourceCode, tokenNUMBER);
         }
 
         @Test
-        void getTokenIDENTIFIERTest() {
+        void IdentifyTypesToken_IDENTIFIER() {
             sourceCode = "varName";
             Token tokenIDENTIFIER = new Token(sourceCode, TokenType.IDENTIFIER);
             checkTokensEqual(sourceCode, tokenIDENTIFIER);
         }
 
         @Test
-        void getTokenSTRINGTest() {
+        void IdentifyTypesToken_STRING() {
             sourceCode = "\"Hello World!\"";
             String expected = "Hello World!";
             Token tokenSTRING = new Token(expected, TokenType.STRING);
@@ -98,7 +98,7 @@ class LexerTest {
         }
 
         @Test
-        void testIdentifyLogicalANDOperatorToken() {
+        void IdentifyLogicalOperatorToken_AND() {
             sourceCode = "AND";
             String expectedOutputCode = "&&";
             Token tokenAND = new Token(expectedOutputCode, TokenType.AND);
@@ -106,7 +106,7 @@ class LexerTest {
         }
 
         @Test
-        void testIdentifyLogicalOROperatorToken() {
+        void IdentifyLogicalOperatorToken_OR() {
             sourceCode = "OR";
             String expectedOutputCode = "||";
             Token tokenOR = new Token(expectedOutputCode, TokenType.OR);
@@ -114,7 +114,7 @@ class LexerTest {
         }
 
         @Test
-        void testIdentifyLogicalNOTOperatorToken() {
+        void IdentifyLogicalOperatorToken_NOT() {
             sourceCode = "NOT";
             String expectedOutputCode = "!";
             Token tokenNOT = new Token(expectedOutputCode, TokenType.NOT);
@@ -122,91 +122,91 @@ class LexerTest {
         }
 
         @Test
-        void getTokenEQTest() {
+        void IdentifyRelationalOperatorToken_EQ() {
             sourceCode = "=";
             Token tokenEQ = new Token(sourceCode, TokenType.EQ);
             checkTokensEqual(sourceCode, tokenEQ);
         }
 
         @Test
-        void getTokenEQEQTest() {
+        void IdentifyRelationalOperatorToken_EQEQ() {
             sourceCode = "==";
             Token tokenEQEQ = new Token(sourceCode, TokenType.EQEQ);
             checkTokensEqual(sourceCode, tokenEQEQ);
         }
 
         @Test
-        void getTokenPLUSTest() {
+        void IdentifyArithmeticOperatorToken_PLUS() {
             sourceCode = "+";
             Token tokenPLUS = new Token(sourceCode, TokenType.PLUS);
             checkTokensEqual(sourceCode, tokenPLUS);
         }
 
         @Test
-        void getTokenMINUSTest() {
+        void IdentifyArithmeticOperatorToken_MINUS() {
             sourceCode = "-";
             Token tokenMINUS = new Token(sourceCode, TokenType.MINUS);
             checkTokensEqual(sourceCode, tokenMINUS);
         }
 
         @Test
-        void getTokenASTERISKTest() {
+        void IdentifyArithmeticOperatorToken_ASTERISK() {
             sourceCode = "*";
             Token tokenASTERISK = new Token(sourceCode, TokenType.ASTERISK);
             checkTokensEqual(sourceCode, tokenASTERISK);
         }
 
         @Test
-        void getTokenSLASHTest() {
+        void IdentifyArithmeticOperatorToken_SLASH() {
             sourceCode = "/";
             Token tokenSLASH = new Token(sourceCode, TokenType.SLASH);
             checkTokensEqual(sourceCode, tokenSLASH);
         }
 
         @Test
-        void getTokenNOTEQTest() {
+        void IdentifyArithmeticOperatorToken_NOTEQ() {
             sourceCode = "!=";
             Token tokenNOTEQ = new Token(sourceCode, TokenType.NOTEQ);
             checkTokensEqual(sourceCode, tokenNOTEQ);
         }
 
         @Test
-        void getTokenLTTest() {
+        void IdentifyArithmeticOperatorToken_LT() {
             sourceCode = "<";
             Token tokenLT = new Token(sourceCode, TokenType.LT);
             checkTokensEqual(sourceCode, tokenLT);
         }
 
         @Test
-        void getTokenLTEQTest() {
+        void IdentifyArithmeticOperatorToken_LTEQ() {
             sourceCode = "<=";
             Token tokenLTEQ = new Token(sourceCode, TokenType.LTEQ);
             checkTokensEqual(sourceCode, tokenLTEQ);
         }
 
         @Test
-        void getTokenGTTest() {
+        void IdentifyArithmeticOperatorToken_GT() {
             sourceCode = ">";
             Token tokenGT = new Token(sourceCode, TokenType.GT);
             checkTokensEqual(sourceCode, tokenGT);
         }
 
         @Test
-        void getTokenGTEQTest() {
+        void IdentifyArithmeticOperatorToken_GTEQ() {
             sourceCode = ">=";
             Token tokenGTEQ = new Token(sourceCode, TokenType.GTEQ);
             checkTokensEqual(sourceCode, tokenGTEQ);
         }
 
         @Test
-        void getTokenPARENTHESESLEFTTest() {
+        void IdentifyArithmeticOperatorToken_PARENTHESESLEFT() {
             sourceCode = "(";
             Token tokenPARENTHESESLEFT = new Token(sourceCode, TokenType.PARENTHESESLEFT);
             checkTokensEqual(sourceCode, tokenPARENTHESESLEFT);
         }
 
         @Test
-        void getTokenPARENTHESESRIGHTTest() {
+        void IdentifyArithmeticOperatorToken_PARENTHESESRIGHT() {
             sourceCode = ")";
             Token tokenPARENTHESESRIGHT = new Token(sourceCode, TokenType.PARENTHESESRIGHT);
             checkTokensEqual(sourceCode, tokenPARENTHESESRIGHT);

@@ -19,6 +19,7 @@ public enum TokenType {
     WHILE(109),
     REPEAT(110),
     ENDWHILE(111),
+    // Keyword Operator
     AND(112),
     OR(113),
     NOT(114),
@@ -36,6 +37,7 @@ public enum TokenType {
     GTEQ(211),
     PARENTHESESLEFT(212),
     PARENTHESESRIGHT(213);
+
     public final int value;
     
     private TokenType(int value) {
