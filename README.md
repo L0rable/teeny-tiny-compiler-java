@@ -18,7 +18,8 @@ statement ::= "PRINT" (expression | string) newline
     | "GOTO" ident newline
     | "LET" ident "=" expression newline
     | "INPUT" ident newline
-comparison ::= expression (("==" | "!=" | ">" | ">=" | "<" | "<=") expression)+
+comparison ::= ["NOT"] expression (("AND" | "OR") expression)+
+    | ["NOT"] expression (("==" | "!=" | ">" | ">=" | "<" | "<=") expression)+
 expression ::= term {( "-" | "+" ) term}
 term ::= unary {( "/" | "*" ) unary}
 unary ::= ["+" | "-"] primary

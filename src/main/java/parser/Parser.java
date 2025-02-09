@@ -57,9 +57,8 @@ public class Parser {
                 || this.checkToken(TokenType.GT) || this.checkToken(TokenType.GTEQ);
     }
 
-    private boolean isLogicalOperator() {
-//        return this.checkToken(TokenType.AND) || this.checkToken(TokenType.OR) || this.checkToken(TokenType.NOT);
-        return this.checkToken(TokenType.AND);
+    private boolean isLogicalOperatorBetweenExpressions() {
+        return this.checkToken(TokenType.AND) || this.checkToken(TokenType.OR);
     }
     
     // newline ::= '\n'+
@@ -166,12 +165,17 @@ public class Parser {
         }
     }
 
-    // comparison ::= expression (("NOT" | "AND" | "OR") expression)+
-    //          | expression (("==" | "!=" | ">" | ">=" | "<" | "<=") expression)+
+    // comparison ::= ["NOT"] expression (("AND" | "OR") expression)+
+    //          | ["NOT"] expression (("==" | "!=" | ">" | ">=" | "<" | "<=") expression)+
     private void comparison() {
+        if (checkToken(TokenType.NOT)) {
+            this.emitter.emit(this.curToken.getTokenText());
+            this.nextToken();
+        }
+
         this.expression();
         // Must be at least 1 (comparison operator -> expression)
-        if (this.isLogicalOperator() || this.isComparisonOperator()) {
+        if (this.isLogicalOperatorBetweenExpressions() || this.isComparisonOperator()) {
             this.emitter.emit(this.curToken.getTokenText());
             this.nextToken();
             this.expression();
@@ -179,7 +183,7 @@ public class Parser {
             this.abort("comparison: Unexpected logical/comparison operator at " + this.curToken.getTokenText());
         }
         // Can have 0 or more (comparison operator -> expression)
-        while (this.isLogicalOperator() || this.isComparisonOperator()) {
+        while (this.isLogicalOperatorBetweenExpressions() || this.isComparisonOperator()) {
             this.emitter.emit(this.curToken.getTokenText());
             this.nextToken();
             this.expression();

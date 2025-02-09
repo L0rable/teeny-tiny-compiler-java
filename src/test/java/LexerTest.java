@@ -105,19 +105,21 @@ class LexerTest {
             checkTokensEqual(sourceCode, tokenAND);
         }
 
-        /*@Test
-        void getTokenORTest() {
+        @Test
+        void testIdentifyLogicalOROperatorToken() {
             sourceCode = "OR";
-            Token tokenOR = new Token(sourceCode, TokenType.OR);
+            String expectedOutputCode = "||";
+            Token tokenOR = new Token(expectedOutputCode, TokenType.OR);
             checkTokensEqual(sourceCode, tokenOR);
         }
 
         @Test
-        void getTokenNOTTest() {
+        void testIdentifyLogicalNOTOperatorToken() {
             sourceCode = "NOT";
-            Token tokenNOT = new Token(sourceCode, TokenType.NOT);
+            String expectedOutputCode = "!";
+            Token tokenNOT = new Token(expectedOutputCode, TokenType.NOT);
             checkTokensEqual(sourceCode, tokenNOT);
-        }*/
+        }
 
         @Test
         void getTokenEQTest() {

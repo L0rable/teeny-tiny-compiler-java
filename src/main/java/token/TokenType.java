@@ -20,8 +20,8 @@ public enum TokenType {
     REPEAT(110),
     ENDWHILE(111),
     AND(112),
-//    OR(113),
-//    NOT(114),
+    OR(113),
+    NOT(114),
     // Operators(200-299)
     EQ(201),
     PLUS(202),

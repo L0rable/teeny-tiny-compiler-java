@@ -33,13 +33,11 @@ public class Token {
     }
 
     public static String convertKeyword(TokenType type) {
-        /*return switch (type) {
-//            case AND -> "&&";
-            case AND -> "AND"; // this is confusing me
+        return switch (type) {
+            case AND -> "&&";
             case OR -> "||";
             case NOT -> "!";
             default -> null;
-        };*/
-        return "&&";
+        };
     }
 }

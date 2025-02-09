@@ -103,5 +103,21 @@ class TokenTest {
             Token actualToken = new Token(expected, TokenType.AND);
             Assertions.assertEquals(expectedToken, actualToken.getTokenKind());
         }
+
+        @Test
+        void checkIfOR() {
+            String expected = "OR";
+            TokenType expectedToken = Token.checkIfKeyword(expected);
+            Token actualToken = new Token(expected, TokenType.OR);
+            Assertions.assertEquals(expectedToken, actualToken.getTokenKind());
+        }
+
+        @Test
+        void checkIfNOT() {
+            String expected = "NOT";
+            TokenType expectedToken = Token.checkIfKeyword(expected);
+            Token actualToken = new Token(expected, TokenType.NOT);
+            Assertions.assertEquals(expectedToken, actualToken.getTokenKind());
+        }
     }
 }
